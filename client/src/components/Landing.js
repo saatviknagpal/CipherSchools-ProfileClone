@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useEffect, useState } from "react";
 import cover from "../assets/cover.png";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
@@ -10,50 +10,122 @@ import {
   faLinkedin,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { faGlobe, faPencil } from "@fortawesome/free-solid-svg-icons";
 import ProfessionalInformation from "./ProfessionalInformation";
 import { currently, highestEducation } from "../data/data";
+import ChangePasswordModal from "./ChangePasswordModal";
+import InterestsModal from "./InterestsModal";
+import SocialMedia from "./SocialMedia";
+import ChangeProfileModal from "./ChangeProfileModal";
+import About from "./About";
+import { useDispatch, useSelector } from "react-redux";
+import { getProfile } from "../redux/slices/fetchProfileSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { updateInitialState } from "../redux/slices/updateProfileSlice";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Landing() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isInterest, setIsInterest] = useState(false);
+  const [isPfp, setIsPfp] = useState(false);
+  const [toggleSocial, setToggleSocial] = useState(false);
+  const [toggleProfessional, setToggleProfessional] = useState(false);
+
+  const dispatch = useDispatch();
+  const userProfile = useSelector(
+    (state) => state?.userProfile?.userProfile?.data
+  );
+  const profileDetails = useSelector((state) => state.profileForm);
+
+  const { id } = useParams();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    } else {
+      dispatch(getProfile({ id }));
+    }
+  }, [isInterest]);
+
+  useEffect(() => {
+    dispatch(updateInitialState({ profile: userProfile }));
+  }, [userProfile, isInterest]);
+
+  const handleSubmit = async () => {
+    try {
+      const finalData = {};
+      for (const key in userProfile) {
+        if (userProfile[key] !== profileDetails[key])
+          finalData[key] = profileDetails[key];
+      }
+      delete finalData.__v;
+      const postDetails = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/profile/update_profile`,
+        finalData,
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
+      const res = postDetails.data;
+      if (res.status === "success") {
+        toast.success(res.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleClick = (state) => {
+    state === "toggleSocial"
+      ? setToggleSocial(!toggleSocial)
+      : setToggleProfessional(!toggleProfessional);
+    if (toggleSocial || toggleProfessional) {
+      handleSubmit();
+    }
+  };
+
   return (
     <div className="bg-[#F2F5FA] ">
-      {/*ABOUT */}
-
+      <ToastContainer />
+      <ChangePasswordModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <InterestsModal isOpen={isInterest} setIsOpen={setIsInterest} />
+      <ChangeProfileModal isOpen={isPfp} setIsOpen={setIsPfp} />
       <div
         style={{ backgroundImage: `url(${cover})` }}
-        className="w-full h-[100px] flex justify-between items-center px-10 bg-cover bg-no-repeat fixed z-50"
+        className="w-full h-[110px] flex justify-between items-center px-10 bg-cover bg-no-repeat fixed z-10"
       >
-        <div className="flex justify-center items-center gap-5 ">
+        <div className="flex justify-center items-center gap-5 relative">
           <img
-            src="https://ui-avatars.com/api/?background=random"
+            src={`https://ui-avatars.com/api/?background=random&name=${
+              profileDetails?.firstName + " " + profileDetails?.lastName
+            }`}
             alt=""
             className="rounded-full "
           />
+          <FontAwesomeIcon
+            icon={faPencil}
+            className="w-3 h-3 cursor-pointer absolute bottom-0 left-5 bg-black rounded-full p-[6px] text-white"
+            onClick={() => setIsPfp(!isPfp)}
+          />
           <div className="flex flex-col">
             <p className="text-lg">Hello,</p>
-            <p className="font-bold text-2xl">User Name</p>
-            <p className="text-base">User Email</p>
+            <p className="font-bold text-2xl">
+              {profileDetails?.firstName + " " + profileDetails?.lastName}
+            </p>
+            <p className="text-base">{profileDetails.email}</p>
           </div>
         </div>
-        <div className="text-lg ">0 Followers</div>
+        <div className="text-lg">
+          {profileDetails?.followers?.length} followers
+        </div>
       </div>
-      <div className="px-10 py-6 space-y-5 pt-[124px]">
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <p className="font-bold">ABOUT ME</p>
-            <button className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm">
-              Edit
-            </button>
-          </div>
-          <textarea
-            name=""
-            id=""
-            cols="30"
-            className="w-full rounded-md p-4 resize-none"
-            rows="5"
-            placeholder="Add something about you"
-          ></textarea>
-        </div>
+      <div className="px-10 py-6 space-y-5 pt-[134px]">
+        {/*ABOUT */}
+        <About />
         <hr />
         {/*update this*/}
         <div className="space-y-4">
@@ -76,113 +148,50 @@ export default function Landing() {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <p className="font-bold">ON THE WEB</p>
-            <button className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm">
-              Edit
+            <button
+              className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm"
+              onClick={() => handleClick("toggleSocial")}
+            >
+              {toggleSocial ? "Save" : "Edit"}
             </button>
           </div>
           <div className="grid grid-cols-2  text-base gap-x-10 gap-y-4">
-            <label
-              htmlFor="linkedIn"
-              className="font-medium flex flex-col gap-1 relative"
-            >
-              Linkedin
-              <input
-                type="url"
-                name="linkedIn"
-                id="linkedIn"
-                placeholder="LinkedIn"
-                className="bg-white rounded-md placeholder-gray-400 px-10 py-3"
-              />
-              <FontAwesomeIcon
-                icon={faLinkedin}
-                className="absolute top-10 w-6 h-6 rounded-full left-2 text-[#808090]"
-              />
-            </label>
-            <label
-              htmlFor="github"
-              className="flex flex-col gap-1 font-medium relative"
-            >
-              Github
-              <input
-                type="url"
-                name="github"
-                id="github"
-                placeholder="Github"
-                className="bg-white rounded-md placeholder-gray-400 px-10 py-3"
-              />
-              <FontAwesomeIcon
-                icon={faGithub}
-                className="absolute top-10 w-6 h-6 rounded-full left-2 text-[#808090]"
-              />
-            </label>
-            <label
-              htmlFor="facebook"
-              className="flex flex-col gap-1 font-medium relative"
-            >
-              Facebook
-              <input
-                type="url"
-                name="facebook"
-                id="facebook"
-                placeholder="Facebook"
-                className="bg-white rounded-md placeholder-gray-400 px-10 py-3"
-              />
-              <FontAwesomeIcon
-                icon={faFacebook}
-                className="absolute top-10 w-6 h-6 rounded-full left-2 text-[#808090]"
-              />
-            </label>
-            <label
-              htmlFor="twitter"
-              className="flex flex-col gap-1 font-medium relative"
-            >
-              Twitter
-              <input
-                type="url"
-                name="twitter"
-                id="twitter"
-                placeholder="Twitter"
-                className="bg-white rounded-md placeholder-gray-400 px-10 py-3"
-              />
-              <FontAwesomeIcon
-                icon={faTwitter}
-                className="absolute top-10 w-6 h-6 rounded-full left-2 text-[#808090]"
-              />
-            </label>
-            <label
-              htmlFor="instagram"
-              className="flex flex-col gap-1 font-medium relative"
-            >
-              Instagram
-              <input
-                type="url"
-                name="instagram"
-                id="instagram"
-                placeholder="Instagram"
-                className="bg-white rounded-md placeholder-gray-400 px-10 py-3"
-              />
-              <FontAwesomeIcon
-                icon={faInstagram}
-                className="absolute top-10 w-6 h-6 rounded-full left-2 text-[#808090]"
-              />
-            </label>
-            <label
-              htmlFor="website"
-              className="flex flex-col gap-1 font-medium relative"
-            >
-              Website
-              <input
-                type="url"
-                name="website"
-                id="website"
-                placeholder="Website"
-                className="bg-white rounded-md placeholder-gray-400 px-10 py-3"
-              />
-              <FontAwesomeIcon
-                icon={faGlobe}
-                className="absolute top-10 w-6 h-6 rounded-full left-2 text-[#808090]"
-              />
-            </label>
+            <SocialMedia
+              title="LinkedIn"
+              icon={faLinkedin}
+              value="linkedIn"
+              toggleSocial={toggleSocial}
+            />
+            <SocialMedia
+              title="Github"
+              icon={faGithub}
+              value="github"
+              toggleSocial={toggleSocial}
+            />
+            <SocialMedia
+              title="Facebook"
+              icon={faFacebook}
+              value="facebook"
+              toggleSocial={toggleSocial}
+            />
+            <SocialMedia
+              title="Twitter"
+              icon={faTwitter}
+              value="twitter"
+              toggleSocial={toggleSocial}
+            />
+            <SocialMedia
+              title="Instagram"
+              icon={faInstagram}
+              value="instagram"
+              toggleSocial={toggleSocial}
+            />
+            <SocialMedia
+              title="Website"
+              icon={faGlobe}
+              value="website"
+              toggleSocial={toggleSocial}
+            />
           </div>
         </div>
         <hr />
@@ -190,18 +199,25 @@ export default function Landing() {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <p className="font-bold">PROFESSIONAL INFORMATION</p>
-            <button className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm">
-              Edit
+            <button
+              className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm"
+              onClick={() => handleClick("toggleProfessional")}
+            >
+              {toggleProfessional ? "Save" : "Edit"}
             </button>
           </div>
           <div className="grid grid-cols-2 relative text-base gap-x-10 gap-y-4">
             <ProfessionalInformation
               heading={"Highest Education"}
               list={highestEducation}
+              title="highestEducation"
+              toggleProfessional={toggleProfessional}
             />
             <ProfessionalInformation
               heading={"What do you do currently?"}
               list={currently}
+              title="currently"
+              toggleProfessional={toggleProfessional}
             />
           </div>
         </div>
@@ -211,7 +227,11 @@ export default function Landing() {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <p className="font-bold">PASSWORD & SECURITY</p>
-            <button className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm">
+            <button
+              type="button"
+              className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm"
+              onClick={() => setIsOpen(!isOpen)}
+            >
               Change
             </button>
           </div>
@@ -225,6 +245,7 @@ export default function Landing() {
                 type="password"
                 name="password"
                 id="password"
+                disabled
                 placeholder="*********"
                 className="bg-white rounded-md placeholder-gray-400 px-4 py-2"
               />
@@ -237,14 +258,22 @@ export default function Landing() {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <p className="font-bold">INTERESTS</p>
-            <button className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm">
+            <button
+              className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm"
+              onClick={() => setIsInterest(!isInterest)}
+            >
               Edit
             </button>
           </div>
           <div className="flex items-center gap-3">
-            <p className="bg-[#F3EBE7] py-2 px-3 text-[#F3935F] font-bold text-xs rounded-md">
-              Web Development
-            </p>
+            {userProfile?.interests?.map((element, index) => (
+              <p
+                className="bg-[#F3EBE7] py-2 px-3 text-[#F3935F] font-bold text-xs rounded-md"
+                key={index}
+              >
+                {element}
+              </p>
+            ))}
           </div>
         </div>
       </div>

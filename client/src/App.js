@@ -8,6 +8,8 @@ import {
 import Landing from "./components/Landing";
 import Navbar from "./components/Navbar";
 import "./App.css";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Router>
           <Routes>
             <Route exact path="/" element={<Landing />} />
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/signup" element={<Signup />} />
           </Routes>
         </Router>
       </div>

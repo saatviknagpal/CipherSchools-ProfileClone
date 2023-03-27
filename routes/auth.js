@@ -6,6 +6,7 @@ const User = require("../models/userModel");
 
 router.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
+  console.log(email, password);
   const emailExist = await User.findOne({ email });
   if (!emailExist) {
     return res.status(401).json({
@@ -21,7 +22,7 @@ router.post("/login", async (req, res, next) => {
       const token = jwt.sign(
         {
           userId: emailExist._id,
-          name: emailExist.name,
+          name: emailExist.firstName,
           email: emailExist.email,
         },
         process.env.JWT_SECRET_KEY
@@ -30,7 +31,7 @@ router.post("/login", async (req, res, next) => {
         status: "success",
         message: "Authentication Successful",
         token: token,
-        userDetails: emailExist,
+        userDetails: emailExist._id,
       });
     } else {
       throw Error;
@@ -45,7 +46,8 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/signup", async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { firstName, lastName, mobile, email, password } = req.body;
+  console.log(firstName, lastName);
   const emailExist = await User.findOne({ email });
   if (emailExist) {
     return res.status(409).json({
@@ -58,9 +60,11 @@ router.post("/signup", async (req, res, next) => {
     const salt = await bcrypt.genSalt();
     var passwordHash = await bcrypt.hash(password, salt);
     const user = await User.create({
-      name,
+      firstName,
+      lastName,
       email,
       password: passwordHash,
+      mobile,
     });
 
     return res.status(201).json({

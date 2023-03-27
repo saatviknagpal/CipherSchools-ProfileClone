@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 
-const { id } = useParams;
 export const getProfile = createAsyncThunk(
   "profile/getProfile",
   async (state) => {
     try {
       const fetchProfileData = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/get_profile/${id}`
+        `${process.env.REACT_APP_BASE_URL}/profile/get_profile/${
+          state.id === undefined ? localStorage.getItem("id") : state.id
+        }`
       );
       const result = await fetchProfileData.data;
       return result;

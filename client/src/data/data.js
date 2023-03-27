@@ -13,3 +13,14 @@ export const currently = [
   "Job",
   "Freelancing",
 ];
+
+export const interests = [
+  "App Development",
+  "Web Development",
+  "Game Development",
+  "Data Structures",
+  "Programming",
+  "Machine Learning",
+  "Data Science",
+  "Others",
+];

@@ -3,13 +3,15 @@ import { createSlice } from "@reduxjs/toolkit";
 const profileSlice = createSlice({
   name: "profile",
   initialState: {
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     mobile: "",
     picture: "",
     bio: "",
+    password: "",
     linkedIn: "",
-    gitHub: "",
+    github: "",
     twitter: "",
     instagram: "",
     facebook: "",
@@ -31,13 +33,18 @@ const profileSlice = createSlice({
 
       return state;
     },
+    updateArray: (state, action) => {
+      const { type, value } = action.payload;
+      state[type].push(value);
+    },
+    deleteArray: (state, action) => {
+      const { type, index } = action.payload;
+      state[type].splice(index, 1);
+    },
   },
 });
 
 export default profileSlice.reducer;
 
-export const {
-  updateDetails,
-
-  updateInitialState,
-} = profileSlice.actions;
+export const { updateDetails, updateArray, deleteArray, updateInitialState } =
+  profileSlice.actions;

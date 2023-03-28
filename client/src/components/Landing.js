@@ -151,13 +151,14 @@ export default function Landing() {
               <p className="font-bold">CIPHER MAP</p>
               <div className="w-full mx-auto h-max pt-4">
                 <CalendarHeatmap
-                  startDate={new Date("2022-12-30")}
-                  endDate={new Date("2023-12-31")}
+                  endDate={new Date("2023-03-28")}
+                  numDays={365}
                   showWeekdayLabels={true}
                   values={[
-                    { date: "2023-01-02", count: 1 },
-                    { date: "2023-01-22", count: 2 },
-                    { date: "2023-01-30", count: 3 },
+                    { date: "2023-03-25", count: 4 },
+                    { date: "2023-03-26", count: 1 },
+                    { date: "2023-03-27", count: 3 },
+                    { date: "2023-03-28", count: 3 },
                   ]}
                   classForValue={(value) => {
                     if (!value) {

@@ -43,7 +43,7 @@ export default function About({ myProfile }) {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <p className="font-bold">ABOUT ME</p>
-          {myProfile ? (
+          {myProfile !== false ? (
             <button
               className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm"
               onClick={handleClick}

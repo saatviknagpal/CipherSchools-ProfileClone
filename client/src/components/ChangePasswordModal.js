@@ -1,14 +1,17 @@
 import { Dialog, Transition } from "@headlessui/react";
 import axios from "axios";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import PasswordInput from "./PasswordInput";
+import Spinner from "./Spinner";
 
 export default function ChangePasswordModal(props) {
   const selector = useSelector((state) => state.profileForm);
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
     if (selector?.newPassword === selector?.confirmPassword) {
+      setLoading(true);
       try {
         const formData = {
           password: selector.password,
@@ -26,10 +29,12 @@ export default function ChangePasswordModal(props) {
         const res = postDetails.data;
         if (res.status === "success") {
           toast.success(res.message);
+          setLoading(false);
           props.setIsOpen(false);
         }
       } catch (error) {
         toast.error(error.response.data.message);
+        setLoading(false);
       }
     } else {
       toast.error("New Password and Confirm Password doesn't match");
@@ -81,13 +86,24 @@ export default function ChangePasswordModal(props) {
                     >
                       Cancel
                     </button>
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-orange-400 px-6 py-1 text-sm font-medium text-white"
-                      onClick={handleSubmit}
-                    >
-                      Save
-                    </button>
+                    {loading ? (
+                      <button
+                        type="button"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-orange-400 px-6 py-1 text-sm font-medium text-white"
+                        disabled
+                      >
+                        <Spinner />
+                        Saving...
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-orange-400 px-6 py-1 text-sm font-medium text-white"
+                        onClick={handleSubmit}
+                      >
+                        Save
+                      </button>
+                    )}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

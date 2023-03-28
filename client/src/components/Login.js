@@ -61,6 +61,19 @@ export default function Login() {
             </p>
           </div>
           <form className="mt-6" onSubmit={handleSubmit}>
+            <div className="flex justify-center items-center">
+              <button
+                className="bg-orange-400 text-white px-4 py-2 rounded-full"
+                onClick={() =>
+                  setFormData({
+                    email: "saatvik@gmail.com",
+                    password: "saatvik",
+                  })
+                }
+              >
+                Add test credentials
+              </button>
+            </div>
             <div className="mb-2">
               <label
                 htmlFor="email"
@@ -73,6 +86,7 @@ export default function Login() {
                 className="block w-full px-4 py-2 mt-2 text-orange-500 bg-white border rounded-md focus:border-orange-400 focus:ring-orange-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 name="email"
                 placeholder="Enter your email"
+                value={formData.email}
                 onChange={handleChange}
                 required
               />
@@ -88,6 +102,7 @@ export default function Login() {
                 type="password"
                 className="block w-full px-4 py-2 mt-2 text-orange-500 bg-white border rounded-md focus:border-orange-400 focus:ring-red-400 focus:outline-none focus:ring focus:ring-opacity-40"
                 name="password"
+                value={formData.password}
                 placeholder="Enter your password"
                 onChange={handleChange}
                 required

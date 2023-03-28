@@ -6,10 +6,12 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import { updateDetails } from "../redux/slices/updateProfileSlice";
+import Spinner from "./Spinner";
 
 export default function ChangeProfileModal(props) {
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -41,6 +43,7 @@ export default function ChangeProfileModal(props) {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const finalData = {};
       const data = new FormData();
@@ -67,10 +70,12 @@ export default function ChangeProfileModal(props) {
       const res = postDetails.data;
       if (res.status === "success") {
         toast.success(res.message);
+        setLoading(false);
         props.setIsOpen(false);
       }
     } catch (error) {
       toast.error(error.message);
+      setLoading(false);
     }
   };
   return (
@@ -221,13 +226,24 @@ export default function ChangeProfileModal(props) {
                     >
                       Cancel
                     </button>
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-orange-400 px-6 py-1 text-sm font-medium text-white"
-                      onClick={handleSubmit}
-                    >
-                      Save
-                    </button>
+                    {loading ? (
+                      <button
+                        type="button"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-orange-400 px-6 py-1 text-sm font-medium text-white"
+                        disabled
+                      >
+                        <Spinner />
+                        Saving...
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-orange-400 px-6 py-1 text-sm font-medium text-white"
+                        onClick={handleSubmit}
+                      >
+                        Save
+                      </button>
+                    )}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

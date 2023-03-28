@@ -11,7 +11,6 @@ import {
   faGithub,
   faInstagram,
   faLinkedin,
-  faLinkedinIn,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";

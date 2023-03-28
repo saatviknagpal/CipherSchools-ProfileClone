@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import logo from "../assets/Cipherschools_Logo.png";
@@ -15,6 +15,12 @@ export default function Signup() {
       [e.target.name]: e.target.value,
     });
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

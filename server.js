@@ -3,6 +3,8 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const auth = require("./routes/auth");
 const profile = require("./routes/profile");
+const followers = require("./routes/followers");
+
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require("cors");
@@ -20,6 +22,7 @@ connection.once("open", () => {
 //Routes
 app.use("/auth", auth);
 app.use("/profile", profile);
+app.use("/followers", followers);
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);

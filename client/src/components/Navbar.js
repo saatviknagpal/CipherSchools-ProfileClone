@@ -6,20 +6,25 @@ import {
   faCompass,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { Menu, Transition } from "@headlessui/react";
+import { Menu, Switch, Transition } from "@headlessui/react";
 import logo from "../assets/Cipherschools_Logo.png";
+import { useSelector } from "react-redux";
 
 function Navbar() {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
-
+  const userProfile = useSelector(
+    (state) => state?.userProfile?.userProfile?.data
+  );
   return (
     <nav className="bg-[#FFFEFE] z-[20] fixed w-full">
       <div className="  px-2 sm:px-4 ">
         <div className="flex justify-between h-14">
           {/* Left side of the navbar */}
           <div className="flex justify-center items-center gap-2">
-            <img src={logo} alt="Logo" className="h-10 w-10" />
-            <p className="font-bold text-xl">CipherSchools</p>
+            <a href="/" className="flex justify-center items-center gap-2">
+              <img src={logo} alt="Logo" className="h-10 w-10" />
+              <p className="font-bold text-xl">CipherSchools</p>
+            </a>
             <div className="hidden md:block">
               <div className="ml-5 flex items-baseline space-x-4">
                 <Menu as="div" className="relative inline-block text-left">
@@ -100,13 +105,13 @@ function Navbar() {
           </div>
 
           {/* Right side of the navbar */}
-          <div className="flex justify-center items-center space-x-8">
+          <div className="flex justify-center items-center space-x-3 md:space-x-5">
             {/* Search bar */}
-            <div className="flex-shrink-0 border rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex justify-start items-center gap-2 bg-[#F2F5FA] w-80">
+            <div className="flex-shrink-0 border rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex justify-start items-center gap-2 bg-[#F2F5FA] lg:w-80 w-10">
               <FontAwesomeIcon icon={faSearch} />
               <input
                 type="text"
-                className="bg-inherit text-sm"
+                className="bg-inherit text-sm w-full focus:outline-none"
                 placeholder="Search and Learn"
               />
             </div>
@@ -127,10 +132,18 @@ function Navbar() {
               <Menu as="div" className="relative inline-block text-left z-50">
                 <div>
                   <Menu.Button className="inline-flex w-full justify-center rounded-md  bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                    <FontAwesomeIcon
-                      icon={faUserCircle}
-                      className="h-5 w-5 text-gray-600"
-                    />
+                    {userProfile?.picture !== "" ? (
+                      <img
+                        src={userProfile?.picture}
+                        alt=""
+                        className="w-8 h-8 rounded-full "
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faUserCircle}
+                        className="h-5 w-5 text-gray-600"
+                      />
+                    )}
                   </Menu.Button>
                 </div>
                 <Transition
@@ -182,25 +195,27 @@ function Navbar() {
               </Menu>
             </div>
             {/* Coins logo and dark mode toggle */}
-            <div className="ml-4 flex gap-2 justify-center items-center">
+            <div className="lg:flex lg:gap-2 lg:justify-center lg:items-center hidden">
               <FontAwesomeIcon
                 icon={faCoins}
                 className="h-5 w-5 text-gray-600"
               />
               <p className="text-orange-500">0</p>
-              <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="ml-4 relative inline-flex items-center justify-center h-6 w-11 rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
-              >
-                <span className="sr-only">Use setting</span>
-                <span
-                  aria-hidden="true"
-                  className={`${
-                    isDarkMode ? "translate-x-5" : "translate-x-0"
-                  } inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200`}
-                ></span>
-              </button>
             </div>
+            <Switch
+              checked={isDarkMode}
+              onChange={() => setIsDarkMode(!isDarkMode)}
+              className={`${
+                isDarkMode ? "bg-black" : "bg-gray-200"
+              } relative inline-flex h-6 w-11 items-center rounded-full`}
+            >
+              <span className="sr-only">Enable notifications</span>
+              <span
+                className={`${
+                  isDarkMode ? "translate-x-6" : "translate-x-1"
+                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+              />
+            </Switch>
           </div>
         </div>
       </div>

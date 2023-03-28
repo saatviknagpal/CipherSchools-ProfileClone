@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import logo from "../assets/Cipherschools_Logo.png";
@@ -37,6 +37,12 @@ export default function Login() {
       toast.error(error.response.data.message);
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <>

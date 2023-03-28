@@ -1,3 +1,5 @@
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +8,7 @@ import logo from "../assets/Cipherschools_Logo.png";
 
 export default function Login() {
   const [formData, setFormData] = useState({});
+  const [toggle, setToggle] = useState(false);
 
   const navigate = useNavigate();
 
@@ -63,6 +66,7 @@ export default function Login() {
           <form className="mt-6" onSubmit={handleSubmit}>
             <div className="flex justify-center items-center">
               <button
+                type="button"
                 className="bg-orange-400 text-white px-4 py-2 rounded-full"
                 onClick={() =>
                   setFormData({
@@ -94,19 +98,24 @@ export default function Login() {
             <div className="mb-2">
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-gray-800"
+                className="block text-sm font-semibold text-gray-800 relative"
               >
                 Password
+                <input
+                  type={toggle ? "text" : "password"}
+                  className="block w-full px-4 py-2 mt-2 text-orange-500 bg-white border rounded-md focus:border-orange-400 focus:ring-red-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  name="password"
+                  value={formData.password}
+                  placeholder="Enter your password"
+                  onChange={handleChange}
+                  required
+                />
+                <FontAwesomeIcon
+                  icon={toggle ? faEyeSlash : faEye}
+                  onClick={() => setToggle(!toggle)}
+                  className="absolute top-9 w-5 h-5 rounded-full right-2 cursor-pointer text-[#808090]"
+                />
               </label>
-              <input
-                type="password"
-                className="block w-full px-4 py-2 mt-2 text-orange-500 bg-white border rounded-md focus:border-orange-400 focus:ring-red-400 focus:outline-none focus:ring focus:ring-opacity-40"
-                name="password"
-                value={formData.password}
-                placeholder="Enter your password"
-                onChange={handleChange}
-                required
-              />
             </div>
 
             <div className="mt-6">

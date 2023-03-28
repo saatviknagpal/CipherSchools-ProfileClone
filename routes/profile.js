@@ -3,6 +3,8 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
 const checkauth = require("../middlewares/checkauth");
+const storage = require("../lib/multer");
+const uploadController = require("../controllers/upload");
 
 router.get("/get_profile/:id", async (req, res, next) => {
   try {
@@ -65,5 +67,12 @@ router.put("/change_password", checkauth, async (req, res, next) => {
     return res.status(500).json({ status: "fail", message: error.message });
   }
 });
+
+router.post(
+  "/upload",
+  checkauth,
+  storage.single("file"),
+  uploadController.uploadImage
+);
 
 module.exports = router;

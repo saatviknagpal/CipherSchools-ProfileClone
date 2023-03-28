@@ -47,11 +47,11 @@ export default function Landing() {
     } else {
       dispatch(getProfile({ id }));
     }
-  }, [isInterest]);
+  }, [isInterest, isPfp]);
 
   useEffect(() => {
     dispatch(updateInitialState({ profile: userProfile }));
-  }, [userProfile, isInterest]);
+  }, [userProfile, isInterest, isPfp]);
 
   const handleSubmit = async () => {
     try {
@@ -99,28 +99,37 @@ export default function Landing() {
         className="w-full h-[110px] flex justify-between items-center px-10 bg-cover bg-no-repeat fixed z-10"
       >
         <div className="flex justify-center items-center gap-5 relative">
-          <img
-            src={`https://ui-avatars.com/api/?background=random&name=${
-              profileDetails?.firstName + " " + profileDetails?.lastName
-            }`}
-            alt=""
-            className="rounded-full "
-          />
+          {userProfile?.picture !== "" ? (
+            <img
+              src={profileDetails?.picture}
+              alt=""
+              className="w-20 h-20 rounded-full "
+            />
+          ) : (
+            <img
+              src={`https://ui-avatars.com/api/?background=random&name=${
+                userProfile?.firstName + " " + userProfile?.lastName
+              }`}
+              alt=""
+              className="w-20 h-20 rounded-full "
+            />
+          )}
+
           <FontAwesomeIcon
             icon={faPencil}
-            className="w-3 h-3 cursor-pointer absolute bottom-0 left-5 bg-black rounded-full p-[6px] text-white"
+            className="w-3 h-3 cursor-pointer absolute -bottom-2 left-7 bg-black rounded-full p-[6px] text-white"
             onClick={() => setIsPfp(!isPfp)}
           />
           <div className="flex flex-col">
             <p className="text-lg">Hello,</p>
             <p className="font-bold text-2xl">
-              {profileDetails?.firstName + " " + profileDetails?.lastName}
+              {userProfile?.firstName + " " + userProfile?.lastName}
             </p>
-            <p className="text-base">{profileDetails.email}</p>
+            <p className="text-base">{userProfile?.email}</p>
           </div>
         </div>
         <div className="text-lg">
-          {profileDetails?.followers?.length} followers
+          {userProfile?.followers?.length} followers
         </div>
       </div>
       <div className="px-10 py-6 space-y-5 pt-[134px]">

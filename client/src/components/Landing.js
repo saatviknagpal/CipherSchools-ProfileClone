@@ -166,6 +166,50 @@ export default function Landing() {
                     return `color-orange`;
                   }}
                 />
+                <div className="flex justify-end items-center gap-1">
+                  <span style={{ padding: 10 }}>Less</span>
+                  <svg width="12" height="12">
+                    <rect
+                      width="12"
+                      height="12"
+                      fill="#ffffff"
+                      padding-left="10"
+                    ></rect>
+                  </svg>
+                  <svg width="12" height="12">
+                    <rect
+                      width="12"
+                      height="12"
+                      fill="#F9C996"
+                      padding="10"
+                    ></rect>
+                  </svg>
+                  <svg width="12" height="12">
+                    <rect
+                      width="12"
+                      height="12"
+                      fill="#F9C996"
+                      padding="10"
+                    ></rect>
+                  </svg>
+                  <svg width="12" height="12">
+                    <rect
+                      width="12"
+                      height="12"
+                      fill="#F6AC63"
+                      padding="10"
+                    ></rect>
+                  </svg>
+                  <svg width="12" height="12">
+                    <rect
+                      width="12"
+                      height="12"
+                      fill="#F2902E"
+                      padding="10"
+                    ></rect>
+                  </svg>
+                  <span style={{ padding: 10 }}>More</span>
+                </div>
               </div>
             </div>
             <hr />

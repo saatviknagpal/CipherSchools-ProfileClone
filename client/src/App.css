@@ -267,6 +267,6 @@
   fill: #f3942d;
 }
 .react-calendar-heatmap text {
-  font-size: 7px;
+  font-size: 7px !important;
   fill: #aaa;
 }

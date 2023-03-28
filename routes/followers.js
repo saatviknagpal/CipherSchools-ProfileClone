@@ -20,10 +20,12 @@ router.get("/get_followers/:id", async (req, res, next) => {
 
 router.post("/update_followers", async (req, res, next) => {
   try {
-    const { firstName, lastName, currently, user_id, picture } = req.body;
+    const { firstName, lastName, currently, followedUserId, user_id, picture } =
+      req.body;
     const followers = new Follower({
       firstName,
       lastName,
+      followedUserId,
       currently,
       user_id,
       picture,
@@ -32,7 +34,7 @@ router.post("/update_followers", async (req, res, next) => {
     const userFollower = await followers.save();
     const findUser = await User.findByIdAndUpdate(
       {
-        _id: user_id,
+        _id: followedUserId,
       },
       {
         $push: {

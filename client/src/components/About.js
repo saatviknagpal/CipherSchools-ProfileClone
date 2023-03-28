@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDetails } from "../redux/slices/updateProfileSlice";
 
-export default function About() {
+export default function About({ myProfile }) {
   const [toggle, setToggle] = useState(false);
   const dispatch = useDispatch();
   const editedDetails = useSelector((state) => state.profileForm);
@@ -43,12 +43,14 @@ export default function About() {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <p className="font-bold">ABOUT ME</p>
-          <button
-            className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm"
-            onClick={handleClick}
-          >
-            {toggle ? "Save" : "Edit"}
-          </button>
+          {myProfile ? (
+            <button
+              className="px-8 py-1 bg-[#F2912F] text-white rounded-md text-sm"
+              onClick={handleClick}
+            >
+              {toggle ? "Save" : "Edit"}
+            </button>
+          ) : null}
         </div>
         <div className="relative">
           <textarea
@@ -62,7 +64,7 @@ export default function About() {
             onChange={(e) =>
               dispatch(updateDetails({ name: "bio", value: e.target.value }))
             }
-            placeholder="Add something about you"
+            placeholder={myProfile ? `Add something about you` : ``}
           ></textarea>
           {toggle ? (
             <FontAwesomeIcon

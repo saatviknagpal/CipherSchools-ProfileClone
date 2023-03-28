@@ -105,7 +105,7 @@ function Navbar() {
           </div>
 
           {/* Right side of the navbar */}
-          <div className="flex justify-center items-center space-x-3 md:space-x-5">
+          <div className="flex justify-center items-center space-x-3 md:space-x-4">
             {/* Search bar */}
             <div className="flex-shrink-0 border rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex justify-start items-center gap-2 bg-[#F2F5FA] lg:w-80 w-10">
               <FontAwesomeIcon icon={faSearch} />
@@ -132,18 +132,10 @@ function Navbar() {
               <Menu as="div" className="relative inline-block text-left z-50">
                 <div>
                   <Menu.Button className="inline-flex w-full justify-center rounded-md  bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                    {userProfile?.picture !== "" ? (
-                      <img
-                        src={userProfile?.picture}
-                        alt=""
-                        className="w-8 h-8 rounded-full "
-                      />
-                    ) : (
-                      <FontAwesomeIcon
-                        icon={faUserCircle}
-                        className="h-5 w-5 text-gray-600"
-                      />
-                    )}
+                    <FontAwesomeIcon
+                      icon={faUserCircle}
+                      className="h-5 w-5 text-gray-600"
+                    />
                   </Menu.Button>
                 </div>
                 <Transition
